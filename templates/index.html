@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPV Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/index.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg">
+                    <div class="card-header text-center bg-info text-black">
+                        <h2>Peak particle velocity Prediction System</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-center mb-7 text-white fs-4">Enter the blasting parameters below to predict PPV MON.</p>
+                        <form id="ppvForm">
+                            <div class="row g-3">
+                                <!-- Input fields for each feature -->
+                                <div class="col-md-6">
+                                    <label for="holeNos" class="form-label">Hole (Nos)</label>
+                                    <input type="number" step="any" class="form-control" id="holeNos" name="Hole (Nos)" placeholder="e.g., 5" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="depth" class="form-label">Depth (m)</label>
+                                    <input type="number" step="any" class="form-control" id="depth" name="Depth (m)" placeholder="e.g., 20" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="spacing" class="form-label">Spacing (m)</label>
+                                    <input type="number" step="any" class="form-control" id="spacing" name="Spacing(m)" placeholder="e.g., 2.5" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="burden" class="form-label">Burden (m)</label>
+                                    <input type="number" step="any" class="form-control" id="burden" name="Burden (m)" placeholder="e.g., 3.5" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="stemming" class="form-label">Stemming (m)</label>
+                                    <input type="number" step="any" class="form-control" id="stemming" name="Stemming(m)" placeholder="e.g., 1.5" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="decking" class="form-label">Decking (m)</label>
+                                    <input type="number" step="any" class="form-control" id="decking" name="Decking(m)" placeholder="e.g., 2" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="totalDrill" class="form-label">Total Drill (RMT)</label>
+                                    <input type="number" step="any" class="form-control" id="totalDrill" name="Total Drill (RMT)" placeholder="e.g., 150" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="explosive" class="form-label">Explosive (kg)</label>
+                                    <input type="number" step="any" class="form-control" id="explosive" name="Explosive(kg)" placeholder="e.g., 120" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="volume" class="form-label">Volume (m³)</label>
+                                    <input type="number" step="any" class="form-control" id="volume" name="Volume(m3)" placeholder="e.g., 300" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="powderFactor" class="form-label">Powder Factor (kg/m³)</label>
+                                    <input type="number" step="any" class="form-control" id="powderFactor" name="Powder Factor(kg/m3)" placeholder="e.g., 0.4" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="avgCPH" class="form-label">Av. CPH</label>
+                                    <input type="number" step="any" class="form-control" id="avgCPH" name="Av. CPH" placeholder="e.g., 50" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="mcpd" class="form-label">MCPD (kg/D)</label>
+                                    <input type="number" step="any" class="form-control" id="mcpd" name="MCPD (kg/D)" placeholder="e.g., 200" required>
+                                </div>
+                                <center>
+                                <div class="col-md-6">
+                                    <label for="seisDist" class="form-label">Seis. Dist. (m)</label>
+                                    <input type="number" step="any" class="form-control" id="seisDist" name="Seis. Dist. (m)" placeholder="e.g., 50" required>
+                                </div>
+                            </center>
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-info btn-lg" style="width: 120px;">Predict</button>
+                            </div>
+                        </form>
+                        <div id="result" class="mt-4"></div>
+                    </div>
+                    <div class="card-footer text-center text-white">
+                        &copy; 2024 PPV Prediction System
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('ppvForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData,
+            });
+            const result = await response.json();
+            document.getElementById('result').innerHTML =
+                result.error ? `<div class="alert alert-danger">${result.error}</div>` : 
+                `<div class="alert alert-success">Predicted PPV: ${result.predicted_ppv.toFixed(2)}</div>`;
+        }
+    </script>
+</body>
+</html>
